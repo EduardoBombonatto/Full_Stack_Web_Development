@@ -1,6 +1,4 @@
-import Header from "./Header";
-import Content from "./Content";
-import Total from "./Total";
+import Course from "./Course";
 
 const App = () => {
   const course = [
@@ -49,22 +47,9 @@ const App = () => {
   ];
   return (
     <div>
-      <Header courseName={course[0].name} />
-      <Content parts={course[0].parts} />
-      <Total
-        sumOfExercises={course[0].parts.reduce(
-          (sum, part) => sum + part.exercises,
-          0
-        )}
-      />
-      <Header courseName={course[1].name} />
-      <Content parts={course[1].parts} />
-      <Total
-        sumOfExercises={course[1].parts.reduce(
-          (sum, part) => sum + part.exercises,
-          0
-        )}
-      />
+      {course.map((course) => (
+        <Course key={course.id} course={course} />
+      ))}
     </div>
   );
 };
