@@ -1,10 +1,14 @@
-import Note from "./components/Note";
-const Person = ({ personsToShow }) => {
+import PersonShow from "./components/PersonShow";
+const Person = ({ personsToShow, deletePerson }) => {
   return (
     <div>
       <ul>
         {personsToShow.map((person) => (
-          <Note key={person.name} person={person} />
+          <PersonShow
+            key={person.name}
+            person={person}
+            deletePerson={deletePerson}
+          />
         ))}
       </ul>
     </div>

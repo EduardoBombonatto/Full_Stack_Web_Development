@@ -39,6 +39,15 @@ const App = () => {
     setNewPhone("");
   };
 
+  const deletePerson = (id) => {
+    const person = persons.find((p) => p.id === id);
+    if (window.confirm(`Deseja excluir ${person.name} da sua lista?`)) {
+      personService.destroy(id).then(() => {
+        setPersons(persons.filter((p) => p.id !== id));
+      });
+    }
+  };
+
   const personsToShow = persons.filter((person) =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -56,7 +65,7 @@ const App = () => {
         handlePhoneChange={handlePhoneChange}
       />
       <h2>Numbers</h2>
-      <Person personsToShow={personsToShow} />
+      <Person personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
   );
 };
