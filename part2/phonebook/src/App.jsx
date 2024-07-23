@@ -25,10 +25,31 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-    const nameExists = persons.some((person) => person.name === newName);
+    const nameExists = persons.find((person) => person.name === newName);
 
     if (nameExists) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already in the phonebook. Replace the old number with a new one?`
+        )
+      ) {
+        const updatePerson = { ...nameExists, phone: newPhone };
+        personService
+          .update(nameExists.id, updatePerson)
+          .then((returnedPerson) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== nameExists.id ? person : returnedPerson
+              )
+            );
+          })
+          .catch((error) => {
+            alert(
+              `The person '${nameExists.name}' was already deleted from server`
+            );
+            setPersons(persons.filter((person) => person.id !== nameExists.id));
+          });
+      }
     } else {
       const newPerson = { name: newName, phone: newPhone };
       personService.create(newPerson).then((returnedPerson) => {
