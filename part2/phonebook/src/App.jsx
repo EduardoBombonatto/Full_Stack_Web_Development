@@ -4,18 +4,27 @@ import Filter from "./Filter";
 import Person from "./Person";
 import PersonForm from "./PersonForm";
 import personService from "./services/persons";
+import Notification from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [searchTerm, setNewSearchTerm] = useState("");
+  const [notification, setNotification] = useState(null);
 
   const handlePersonChange = (event) => setNewName(event.target.value);
 
   const handlePhoneChange = (event) => setNewPhone(event.target.value);
 
   const handleSearchChange = (event) => setNewSearchTerm(event.target.value);
+
+  const showNotification = (message) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
 
   useEffect(() => {
     axios.get("http://localhost:3001/persons").then((response) => {
@@ -42,6 +51,7 @@ const App = () => {
                 person.id !== nameExists.id ? person : returnedPerson
               )
             );
+            showNotification(`Updated ${returnedPerson.name}'s number`);
           })
           .catch((error) => {
             alert(
@@ -58,6 +68,7 @@ const App = () => {
     }
     setNewName("");
     setNewPhone("");
+    showNotification(`Added ${returnedPerson.name}`);
   };
 
   const deletePerson = (id) => {
@@ -65,6 +76,7 @@ const App = () => {
     if (window.confirm(`Deseja excluir ${person.name} da sua lista?`)) {
       personService.destroy(id).then(() => {
         setPersons(persons.filter((p) => p.id !== id));
+        showNotification(`${person.name} foi excluido da sua lista`);
       });
     }
   };
@@ -76,6 +88,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={notification} />
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
       <h2>Add new Numbers</h2>
       <PersonForm
