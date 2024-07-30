@@ -11,7 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [searchTerm, setNewSearchTerm] = useState("");
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState({ message: null });
 
   const handlePersonChange = (event) => setNewName(event.target.value);
 
@@ -19,10 +19,10 @@ const App = () => {
 
   const handleSearchChange = (event) => setNewSearchTerm(event.target.value);
 
-  const showNotification = (message) => {
-    setNotification(message);
+  const showNotification = (message, type = "info") => {
+    setNotification({ message, type });
     setTimeout(() => {
-      setNotification(null);
+      setNotification({ message: null });
     }, 5000);
   };
 
@@ -54,8 +54,9 @@ const App = () => {
             showNotification(`Updated ${returnedPerson.name}'s number`);
           })
           .catch((error) => {
-            alert(
-              `The person '${nameExists.name}' was already deleted from server`
+            showNotification(
+              `The person '${nameExists.name}' was already deleted from server`,
+              "error"
             );
             setPersons(persons.filter((person) => person.id !== nameExists.id));
           });
@@ -64,11 +65,11 @@ const App = () => {
       const newPerson = { name: newName, phone: newPhone };
       personService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewPhone("");
+        showNotification(`${returnedPerson.name} foi adicionado a sua lista`);
       });
     }
-    setNewName("");
-    setNewPhone("");
-    showNotification(`Added ${returnedPerson.name}`);
   };
 
   const deletePerson = (id) => {
@@ -88,7 +89,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification message={notification} />
+      <Notification info={notification} />
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
       <h2>Add new Numbers</h2>
       <PersonForm

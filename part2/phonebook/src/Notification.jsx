@@ -1,25 +1,20 @@
-import React from "react";
-
-const Notification = ({ message }) => {
-  if (!message) {
-    return null;
+const Notification = ({ info }) => {
+  console.log(info);
+  if (!info.message) {
+    return;
   }
 
-  return (
-    <div
-      style={{
-        color: "green",
-        background: "lightgrey",
-        fontSize: "20px",
-        borderStyle: "solid",
-        borderRadius: "5px",
-        padding: "10px",
-        marginBottom: "10px",
-      }}
-    >
-      {message}
-    </div>
-  );
+  const style = {
+    color: info.type === "error" ? "red" : "green",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  };
+
+  return <div style={style}>{info.message}</div>;
 };
 
 export default Notification;
